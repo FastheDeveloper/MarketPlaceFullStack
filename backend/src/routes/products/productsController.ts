@@ -1,17 +1,20 @@
 import { Request,Response } from "express"
 import { db } from "../../db";
-import { productsTable } from "../../db/productsSchema";
+import { createProductZodSchema, productsTable } from "../../db/productsSchema";
 import { eq } from "drizzle-orm";
+import _ from 'lodash'
+
 
 export async function listProducts (req:Request,res:Response){
   try {
   const products=await db.select().from(productsTable)
   res.json(products)
+  return
   } catch (error) {
     res.status(500).send(error)
-    
+    return
   }
-  res.send("listProducts")
+
   }
 
 export async function getProductById(req:Request,res:Response){
@@ -23,6 +26,7 @@ export async function getProductById(req:Request,res:Response){
       return; 
     }else{
       res.json(products)
+      return
     }
   } catch (error) {
     res.status(500).send(error)
@@ -32,10 +36,13 @@ export async function getProductById(req:Request,res:Response){
 
   export async function  createProduct(req:Request,res:Response){
     try {
-      const [product]= await db.insert(productsTable).values(req.body).returning()
+      const data= req.cleanBody
+      const [product]= await db.insert(productsTable).values(data).returning()
       res.status(201).json(product)
+      return
     } catch (error) {
       res.status(500).send(error)
+      return
     }
 
   }
@@ -43,7 +50,7 @@ export async function getProductById(req:Request,res:Response){
   export async function updateProduct(req:Request,res:Response){
     try {
       const id=Number(req.params.id)
-      const updatedFields=req.body
+      const updatedFields=req.cleanBody
 
     const [updatedProduct]=await  db.update(productsTable).set(updatedFields).where(eq(productsTable.id,id)).returning()
     if(updatedProduct){
@@ -55,9 +62,9 @@ export async function getProductById(req:Request,res:Response){
     }
   } catch (error) {
       res.status(500).send(error)
-      
+      return
     }
-    res.send("updateProduct")
+
   }
 
   export async function deleteProduct(req:Request,res:Response){
@@ -74,6 +81,6 @@ export async function getProductById(req:Request,res:Response){
 
     } catch (error) {
       res.status(500).send(error)
-      
+      return
     }
   }
