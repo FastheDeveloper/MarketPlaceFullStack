@@ -10,6 +10,7 @@ app.use(json())
 
 app.get('/', (req, res) => {
   res.send('Hello Worldjkj!')
+
 })
 
 app.use('/products',productsRouter);
