@@ -16,4 +16,4 @@ export const createProductZodSchema=createInsertSchema(productsTable).omit({
 
 export const updateProductZodSchema=createInsertSchema(productsTable).omit({
   id:true //cant change id
-}).partial()
+}).partial()   //all fields are optional
