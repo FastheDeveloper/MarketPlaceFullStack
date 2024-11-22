@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { createLoginScheme, createUserScheme, usersTable } from "../../db/usersSchema";
-import { validateData } from "../../middlewares/validationMiddleware";
+import { createLoginScheme, createUserScheme, usersTable } from "../../db/usersSchema.js";
+import { validateData } from "../../middlewares/validationMiddleware.js";
 import bcrypt from 'bcryptjs'
-import { db } from "../../db";
+import { db } from "../../db/index.js";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken"
 const router = Router()
@@ -52,7 +52,8 @@ router.post("/login", validateData(createLoginScheme), async (req, res) => {
         res.status(200).json({ user, token })
         return
     } catch (error) {
-        res.status(500)
+        res.status(500).json({ error: true, message: "something went wrong" })
+        return
     }
 })
 
