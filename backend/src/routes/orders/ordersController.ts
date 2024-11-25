@@ -64,25 +64,42 @@ export async function createOrder(req: Request, res: Response) {
 //list order based on user id
 export async function listOrders(req: Request, res: Response) {
     try {
-        res.status(201).json({ yaay: "yaay" })
+        const userId = req.userId
+        if (!userId) {
+            res.status(400).json({ error: true, message: "Invalid data, userId not found" })
+            return
+        }
+        const orders = await db.select().from(ordersTable).where(eq(ordersTable.userId, Number(userId)))
+        res.status(201).json({ error: false, data: orders })
 
     } catch (error) {
-
+        res.status(500).json({ error: true, message: error })
+        return
     }
 }
 
 export async function getOrderById(req: Request, res: Response) {
     try {
-        res.status(201).json({ yaay: "yaay" })
+        const { id } = req.params
+        const [order] = await db.select().from(ordersTable).where(eq(ordersTable.id, Number(id)))
+        if (!order) {
+            res.status(404).json([]);
+            return;
+        } else {
+            res.status(201).json({ error: false, data: order })
+            return
+        }
 
     } catch (error) {
-
+        res.status(500).send(error)
+        return
     }
 }
 
 
 export async function updateOrderItems(req: Request, res: Response) {
     try {
+
         res.status(201).json({ yaay: "yaay" })
 
     } catch (error) {
@@ -92,10 +109,19 @@ export async function updateOrderItems(req: Request, res: Response) {
 
 export async function deleteOrder(req: Request, res: Response) {
     try {
-        res.status(201).json({ yaay: "yaay" })
+        const id = Number(req.params.id)
+        const [deleteProduct] = await db.delete(ordersTable).where(eq(ordersTable.id, id)).returning()
+        if (deleteProduct) {
+            res.status(204).send()
+            return
+        } else {
+            res.status(404).send({ error: true, message: "product not found" })
+            return
+        }
 
     } catch (error) {
-
+        res.status(500).send(error)
+        return
     }
 }
 
