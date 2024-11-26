@@ -74,13 +74,25 @@ export async function createOrder(req: Request, res: Response) {
 export async function listOrders(req: Request, res: Response) {
     try {
         const userId = req.userId
+        const role = req.role
+
         if (!userId) {
             res.status(400).json({ error: true, message: "Invalid data, userId not found" })
             return
         }
-        const orders = await db.select().from(ordersTable).where(eq(ordersTable.userId, Number(userId)))
-        res.status(201).json({ error: false, data: orders })
-
+        if (role?.toLowerCase() === 'user') {
+            const orders = await db.select().from(ordersTable).where(eq(ordersTable.userId, Number(userId)))
+            res.status(201).json({ error: false, data: orders })
+            return
+        }
+        if (role?.toLowerCase() === "admin") {
+            console.log('==================ADMIN==================');
+            console.log(role);
+            console.log('====================================');
+            const orders = await db.select().from(ordersTable)
+            res.status(201).json({ error: false, data: orders })
+            return
+        }
     } catch (error) {
         res.status(500).json({ error: true, message: error })
         return
