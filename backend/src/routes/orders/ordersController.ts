@@ -11,13 +11,22 @@ export async function createOrder(req: Request, res: Response) {
         const { items, order } = req.cleanBody
         // const items = req.cleanBody.items
         const notes = order.notes
+        const deliveryAddress = order.deliveryAddress
+        console.log('====================================');
+        console.log(req.cleanBody);
+        console.log('====================================');
+
         // console.log(data, "cleanbody", items)
         const userId = req.userId
         if (!userId) {
             res.status(400).json({ error: true, message: "Invalid data, userId not found" })
             return
         }
-        const [newOrder] = await db.insert(ordersTable).values({ userId: Number(userId), notes: notes, }).returning()
+        if (!deliveryAddress) {
+            res.status(400).json({ error: true, message: "Please insert you address or pick from the map" })
+            return
+        }
+        const [newOrder] = await db.insert(ordersTable).values({ userId: Number(userId), notes: notes, deliveryAddress }).returning()
         const productIds = items.map((product: any) => product.productId)
         const productDetails = await db.select().from(productsTable).where(inArray(productsTable.id, productIds))
         const productMap = productDetails.reduce((acc: Record<number, typeof productDetails[0]>, product) => {
@@ -99,11 +108,26 @@ export async function getOrderById(req: Request, res: Response) {
 
 export async function updateOrderItems(req: Request, res: Response) {
     try {
+        const id = Number(req.params.id)
+        const updatedFields = req.cleanBody
 
-        res.status(201).json({ yaay: "yaay" })
+        const [updatedOrder] = await db.update(ordersTable).set(updatedFields).where(eq(ordersTable.id, id)).returning()
+        const userId = req.userId
 
+        if (!userId) {
+            res.status(400).json({ error: true, message: "Invalid data, userId not found" })
+            return
+        }
+        if (updatedOrder) {
+            res.json(updatedOrder)
+            return
+        } else {
+            res.status(404).send({ error: true, message: "Order not found" })
+            return
+        }
     } catch (error) {
-
+        res.status(404).send({ error: true, message: error })
+        return
     }
 }
 

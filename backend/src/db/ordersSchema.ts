@@ -13,7 +13,8 @@ export const ordersTable = pgTable('orders', {
     userId: integer()  //One to many relationship User <===> Orders
         .references(() => usersTable.id)
         .notNull(),
-    notes: text().default("")
+    notes: text().default(""),
+    deliveryAddress: text().default("")
     // stripePaymentIntentId: varchar({ length: 255 }),
 });
 
@@ -50,7 +51,7 @@ export const createOrderWithItemSchema = z.object({
     items: z.array(insertOrderItemSchema),
 });
 
-export const updateOrderSchema = createInsertSchema(ordersTable).pick({
+export const updateOrderSchema = createInsertSchema(ordersTable).omit({
     id: true,
     userId: true,
     status: true,
