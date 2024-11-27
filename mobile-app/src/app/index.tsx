@@ -6,14 +6,15 @@ import { Button, ButtonText } from "@/components/ui/button";
 export default function Page() {
   return (
     <View style={styles.container}>
-      {/* <FlatList
+      <FlatList
         data={products}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <ProductListItem item={item} />}
-      /> */}
-      <Button variant="outline">
-        <ButtonText>PRESS ME</ButtonText>
-      </Button>
+        showsVerticalScrollIndicator={false}
+        numColumns={2}
+        contentContainerClassName="gap-2"
+        columnWrapperClassName="gap-2"
+      />
     </View>
   );
 }
