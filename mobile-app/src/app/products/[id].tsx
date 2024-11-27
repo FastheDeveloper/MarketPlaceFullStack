@@ -7,17 +7,31 @@ import { Image } from "@/components/ui/image";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import { Button, ButtonText } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { getProductById } from "@/apiHelper/products";
+import { ActivityIndicator } from "react-native";
+
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const myProduct = products.find((product) => product.id === Number(id));
+  // const myProduct = products.find((product) => product.id === Number(id));
 
-  if (!myProduct) {
-    return <Text>No Product found</Text>;
+  const {
+    data: myProduct,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["products", id],
+    queryFn: () => getProductById(Number(id)),
+  });
+
+  if (isLoading) {
+    return <ActivityIndicator />;
   }
-  console.log("====================================");
-  console.log(myProduct);
-  console.log("====================================");
+  if (error) {
+    return <Text>Product not found</Text>;
+  }
+
   return (
     <Box className="bg-white flex-1 items-center">
       <Card className="p-5 rounded-lg  max-w-[960px] w-full flex-1">
