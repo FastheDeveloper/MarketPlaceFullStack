@@ -5,7 +5,9 @@ import "@/global.css";
 export default function RootLayout() {
   return (
     <GluestackUIProvider>
-      <Stack />
+      <Stack>
+        <Stack.Screen name="index" options={{ title: "Shop" }} />
+      </Stack>
     </GluestackUIProvider>
   );
 }
