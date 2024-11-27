@@ -1,36 +1,31 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import products from "../../assets/products.json";
 import ProductListItem from "../component/ProductList";
 import { Button, ButtonText } from "@/components/ui/button";
+import { useBreakpointValue } from "@/components/ui/utils/use-break-point-value";
 
 export default function Page() {
+  const numColumns = useBreakpointValue({
+    default: 2,
+    sm: 3,
+    xl: 4,
+  });
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={products}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => <ProductListItem item={item} />}
-        showsVerticalScrollIndicator={false}
-        numColumns={2}
-        contentContainerClassName="gap-2"
-        columnWrapperClassName="gap-2"
-      />
-    </View>
+    <FlatList
+      data={products}
+      key={numColumns}
+      keyExtractor={(item) => String(item.id)}
+      renderItem={({ item }) => <ProductListItem item={item} />}
+      showsVerticalScrollIndicator={false}
+      numColumns={numColumns}
+      contentContainerClassName="gap-2 max-w-[960px]  mx-auto mx-auto w-full"
+      columnWrapperClassName="gap-2"
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-  },
-
-  title: {
-    fontSize: 64,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
-  },
-});
