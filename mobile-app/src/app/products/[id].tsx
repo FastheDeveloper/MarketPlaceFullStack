@@ -11,7 +11,20 @@ import { useQuery } from "@tanstack/react-query";
 import { getProductById } from "@/apiHelper/products";
 import { ActivityIndicator } from "react-native";
 import { useCart } from "@/src/store/cartStore";
+import { HStack } from "@/components/ui/hstack";
+import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
 
+const LoadingSkeleton = () => (
+  <Box className="bg-white flex-1 items-center">
+    <Skeleton variant="rounded" speed={4} className="h-[300px] p-5 mb-6" />
+    <HStack className="gap-2 align-left mb-2 px-4">
+      <SkeletonText _lines={2} gap={4} className="h-2 w-[70px]" />
+    </HStack>
+    <HStack className="gap-2 align-left mt-4 px-4">
+      <SkeletonText _lines={4} gap={2} className="h-2 w-full" />
+    </HStack>
+  </Box>
+);
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const addProduct = useCart((state) => state.addProduct);
@@ -32,7 +45,7 @@ export default function ProductDetailScreen() {
   };
 
   if (isLoading) {
-    return <ActivityIndicator />;
+    return <LoadingSkeleton />;
   }
 
   if (error) {

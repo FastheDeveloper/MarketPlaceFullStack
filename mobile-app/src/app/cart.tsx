@@ -31,9 +31,15 @@ const Cart = () => {
       console.log("error");
     },
   });
+
   const onCheckout = async () => {
     createOrderMutation.mutate();
   };
+
+  const totalPrice = items.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0
+  );
 
   if (items.length === 0) {
     return <Redirect href={"/"} />;
@@ -52,7 +58,7 @@ const Cart = () => {
       <FlatList
         data={items}
         keyExtractor={(item) => String(item.product.id + Math.random())}
-        contentContainerClassName="gap-2 max-w-[960px] w-full mx-auto p-2"
+        contentContainerClassName="gap-2 max-w-[960px] w-full mx-auto p-2 h-full "
         renderItem={({ item }) => (
           <HStack className="bg-white p-3">
             <VStack space="sm">
@@ -63,10 +69,16 @@ const Cart = () => {
           </HStack>
         )}
         ListFooterComponent={() => (
-          <Button onPress={onCheckout}>
-            <ButtonText>Checkout</ButtonText>
-          </Button>
+          <VStack>
+            <Text className="font-bold text-3xl">
+              Total: ${totalPrice.toFixed(2)}
+            </Text>
+            <Button onPress={onCheckout}>
+              <ButtonText>Checkout</ButtonText>
+            </Button>
+          </VStack>
         )}
+        ListFooterComponentClassName="flex-1  justify-end mb-20"
       />
     </View>
   );
