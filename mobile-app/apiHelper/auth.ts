@@ -1,9 +1,6 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL
 
 export async function login(email: string, password: string) {
-    console.log('====================================');
-    console.log(email, password);
-    console.log('====================================');
     const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -35,9 +32,6 @@ export async function register(email: string, password: string, name: string) {
         })
 
         const data = await res.json()
-        console.log('====================================');
-        console.log(data);
-        console.log('====================================');
         if (!res.ok) {
             throw Error('Failed to register')
         }
