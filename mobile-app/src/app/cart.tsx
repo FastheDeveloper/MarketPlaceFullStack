@@ -5,13 +5,37 @@ import { useCart } from "../store/cartStore";
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
 import { Button, ButtonText } from "@/components/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { createOrder } from "@/apiHelper/orders";
 
 const Cart = () => {
   const items = useCart((state) => state.items);
   const resetCart = useCart((state) => state.resetCart);
-
+  console.log("====================================");
+  console.log(items);
+  console.log("====================================");
+  const createOrderMutation = useMutation({
+    mutationFn: () =>
+      createOrder(
+        {
+          notes: "fly fishing pole",
+          deliveryAddress: "Shagamu",
+        },
+        items.map((item: any) => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+        }))
+      ),
+    onSuccess: (data) => {
+      console.log("success");
+      resetCart();
+    },
+    onError: () => {
+      console.log("error");
+    },
+  });
   const onCheckout = async () => {
-    resetCart();
+    createOrderMutation.mutate();
   };
 
   if (items.length === 0) {
