@@ -30,9 +30,7 @@ export default function ProductDetailScreen() {
   const addToCart = () => {
     addProduct(myProduct);
   };
-  console.log("====================================");
-  console.log(cartItems);
-  console.log("====================================");
+
   if (isLoading) {
     return <ActivityIndicator />;
   }

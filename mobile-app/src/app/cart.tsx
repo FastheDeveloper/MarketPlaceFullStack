@@ -11,9 +11,6 @@ import { createOrder } from "@/apiHelper/orders";
 const Cart = () => {
   const items = useCart((state) => state.items);
   const resetCart = useCart((state) => state.resetCart);
-  console.log("====================================");
-  console.log(items);
-  console.log("====================================");
   const createOrderMutation = useMutation({
     mutationFn: () =>
       createOrder(

@@ -19,9 +19,6 @@ export async function createOrder(deliveryDeets: {}, items: any[]) {
         })
 
         const data = await res.json()
-        console.log('====================================');
-        console.log(data);
-        console.log('====================================');
         if (!res.ok) {
             throw Error('Failed to create order')
         }
@@ -29,9 +26,7 @@ export async function createOrder(deliveryDeets: {}, items: any[]) {
 
         return data
     } catch (error) {
-        console.log('====================================');
-        console.log(error);
-        console.log('====================================');
+
     }
 
 }
