@@ -9,9 +9,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 const Cart = () => {
   const items = useCart((state) => state.items);
   const resetCart = useCart((state) => state.resetCart);
-  console.log("====================================");
-  // console.log(JSON.stringify(items, null, 2));\
-  console.log(items[0].quantity, "====================================");
+
   const onCheckout = async () => {
     resetCart();
   };
@@ -26,6 +24,7 @@ const Cart = () => {
         options={{
           title: "Cart",
           headerRight: undefined,
+          headerLeft: undefined,
           headerBackButtonDisplayMode: "minimal",
         }}
       />

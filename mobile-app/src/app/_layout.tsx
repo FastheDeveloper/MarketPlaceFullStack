@@ -7,16 +7,16 @@ import { ShoppingCart, User } from "lucide-react-native";
 import { useCart } from "../store/cartStore";
 import { Text } from "@/components/ui/text";
 import { Pressable } from "react-native";
+import { useAuth } from "../store/authStore";
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const items = useCart((state) => state.items);
+  const isLoggedIn = useAuth((s) => !!s.token);
+
   // Calculate the total quantity of all items
   const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
-  console.log("================st===================");
-  console.log(totalQuantity);
-  console.log("====================================");
   return (
     <QueryClientProvider client={queryClient}>
       <GluestackUIProvider>
@@ -33,13 +33,14 @@ export default function RootLayout() {
                 </Pressable>
               </Link>
             ),
-            headerLeft: () => (
-              <Link href={"/login"} asChild>
-                <Pressable className="flex-row gap-2">
-                  <Icon as={User} />
-                </Pressable>
-              </Link>
-            ),
+            headerLeft: () =>
+              !isLoggedIn && (
+                <Link href={"/login"} asChild>
+                  <Pressable className="flex-row gap-2">
+                    <Icon as={User} />
+                  </Pressable>
+                </Link>
+              ),
           }}
         >
           <Stack.Screen name="index" options={{ title: "Shop" }} />

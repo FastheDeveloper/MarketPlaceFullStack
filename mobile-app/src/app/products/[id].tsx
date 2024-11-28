@@ -41,7 +41,14 @@ export default function ProductDetailScreen() {
   return (
     <Box className="bg-white flex-1 items-center">
       <Card className="p-5 rounded-lg  max-w-[960px] w-full flex-1">
-        <Stack.Screen options={{ headerTitle: `${myProduct.name}` }} />
+        <Stack.Screen
+          options={{
+            headerTitle: `${myProduct.name}`,
+            headerLeft: undefined,
+            headerBackButtonDisplayMode: "minimal",
+          }}
+        />
+
         <Image
           source={{
             uri: myProduct.image,
