@@ -24,6 +24,7 @@ const Cart = () => {
         options={{
           title: "Cart",
           headerRight: undefined,
+          headerLeft: undefined,
           headerBackButtonDisplayMode: "minimal",
         }}
       />
@@ -37,7 +38,7 @@ const Cart = () => {
               <Text>{item.product.name}</Text>
               <Text>$ {item.product.price}</Text>
             </VStack>
-            <Text className="ml-auto">{item.quatity}</Text>
+            <Text className="ml-auto">{item.quantity}</Text>
           </HStack>
         )}
         ListFooterComponent={() => (

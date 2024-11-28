@@ -12,8 +12,10 @@
   "dependencies": {
     "@expo/html-elements": "^0.4.2",
     "@gluestack-ui/button": "^1.0.8",
+    "@gluestack-ui/form-control": "^0.1.19",
     "@gluestack-ui/icon": "^0.1.23",
     "@gluestack-ui/image": "^0.1.11",
+    "@gluestack-ui/input": "^0.1.32",
     "@gluestack-ui/nativewind-utils": "^1.0.23",
     "@gluestack-ui/overlay": "^0.1.16",
     "@gluestack-ui/pressable": "^0.1.17",
@@ -37,7 +39,8 @@
     "react-native-svg": "^13.4.0",
     "react-native-web": "~0.19.13",
     "tailwindcss": "^3.4.15",
-    "zustand": "^5.0.1"
+    "zustand": "^5.0.1",
+    "@react-native-async-storage/async-storage": "1.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
