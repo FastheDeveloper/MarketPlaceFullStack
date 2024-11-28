@@ -9,7 +9,9 @@ import { Button, ButtonText } from "@/components/ui/button";
 const Cart = () => {
   const items = useCart((state) => state.items);
   const resetCart = useCart((state) => state.resetCart);
-
+  console.log("====================================");
+  // console.log(JSON.stringify(items, null, 2));\
+  console.log(items[0].quantity, "====================================");
   const onCheckout = async () => {
     resetCart();
   };
@@ -37,7 +39,7 @@ const Cart = () => {
               <Text>{item.product.name}</Text>
               <Text>$ {item.product.price}</Text>
             </VStack>
-            <Text className="ml-auto">{item.quatity}</Text>
+            <Text className="ml-auto">{item.quantity}</Text>
           </HStack>
         )}
         ListFooterComponent={() => (
