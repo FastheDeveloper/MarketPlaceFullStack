@@ -10,10 +10,12 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { getProductById } from "@/apiHelper/products";
 import { ActivityIndicator } from "react-native";
+import { useCart } from "@/src/store/cartStore";
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-
+  const addProduct = useCart((state) => state.addProduct);
+  const cartItems = useCart((state) => state.items);
   // const myProduct = products.find((product) => product.id === Number(id));
 
   const {
@@ -25,9 +27,13 @@ export default function ProductDetailScreen() {
     queryFn: () => getProductById(Number(id)),
   });
 
+  const addToCart = () => {
+    addProduct(myProduct);
+  };
   if (isLoading) {
     return <ActivityIndicator />;
   }
+
   if (error) {
     return <Text>Product not found</Text>;
   }
@@ -54,7 +60,10 @@ export default function ProductDetailScreen() {
           <Text size="sm">{myProduct.description}</Text>
         </VStack>
         <Box className="flex-col sm:flex-row">
-          <Button className="px-4 py-2 mr-0 mb-3 sm:mr-3 sm:mb-0 sm:flex-1">
+          <Button
+            onPress={addToCart}
+            className="px-4 py-2 mr-0 mb-3 sm:mr-3 sm:mb-0 sm:flex-1"
+          >
             <ButtonText size="sm">Add to cart</ButtonText>
           </Button>
           <Button
