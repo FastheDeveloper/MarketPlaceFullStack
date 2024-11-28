@@ -34,10 +34,18 @@ export default function RootLayout() {
               </Link>
             ),
             headerLeft: () =>
-              !isLoggedIn && (
+              !isLoggedIn ? (
                 <Link href={"/login"} asChild>
                   <Pressable className="flex-row gap-2">
                     <Icon as={User} />
+                  </Pressable>
+                </Link>
+              ) : (
+                <Link href={"/orderList"} asChild>
+                  <Pressable className="flex-row gap-2">
+                    <Text className="text-lg font-semibold underline decoration-red-700">
+                      Open Orders
+                    </Text>
                   </Pressable>
                 </Link>
               ),
