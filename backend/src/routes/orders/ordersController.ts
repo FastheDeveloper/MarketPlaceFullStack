@@ -73,49 +73,123 @@ export async function createOrder(req: Request, res: Response) {
 //list order based on user id
 export async function listOrders(req: Request, res: Response) {
     try {
-        const userId = req.userId
-        const role = req.role
+        const userId = req.userId;
+        const role = req.role;
+
+        console.log('====================================');
+        console.log(role);
+        console.log('====================================');
 
         if (!userId) {
-            res.status(400).json({ error: true, message: "Invalid data, userId not found" })
-            return
+            res.status(400).json({ error: true, message: "Invalid data, userId not found" });
+            return;
         }
+
+        let rawOrders;
+
         if (role?.toLowerCase() === 'user') {
-            const orders = await db.select().from(ordersTable).where(eq(ordersTable.userId, Number(userId)))
-            res.status(201).json({ error: false, data: orders })
-            return
-        }
-        if (role?.toLowerCase() === "admin") {
+            rawOrders = await db
+                .select()
+                .from(ordersTable)
+                .where(eq(ordersTable.userId, Number(userId)))
+                .leftJoin(orderItemsTable, eq(ordersTable.id, orderItemsTable.orderId))
+                .leftJoin(productsTable, eq(orderItemsTable.productId, productsTable.id));
+        } else if (role?.toLowerCase() === 'admin') {
             console.log('==================ADMIN==================');
             console.log(role);
             console.log('====================================');
-            const orders = await db.select().from(ordersTable)
-            res.status(201).json({ error: false, data: orders })
-            return
+
+            rawOrders = await db
+                .select()
+                .from(ordersTable)
+                .leftJoin(orderItemsTable, eq(ordersTable.id, orderItemsTable.orderId))
+                .leftJoin(productsTable, eq(orderItemsTable.productId, productsTable.id));
+        } else {
+            res.status(403).json({ error: true, message: "Unauthorized access" });
+            return;
         }
-    } catch (error) {
-        res.status(500).json({ error: true, message: error })
-        return
+
+        // Group the products by their orderId
+        const groupedOrders = rawOrders.reduce((acc: any, row: any) => {
+            const orderId = row.orders.id;
+
+            // Check if the order already exists in the accumulator
+            if (!acc[orderId]) {
+                acc[orderId] = {
+                    ...row.orders,
+                    products: [], // Initialize an empty array for products
+                };
+            }
+
+            // Add the product details from the `productsTable` and `order_products`
+            if (row.order_products && row.products) {
+                acc[orderId].products.push({
+                    ...row.order_products,
+                    ...row.products, // Add all product fields
+                });
+            }
+
+            return acc;
+        }, {});
+
+        // Convert the grouped object into an array
+        const formattedOrders = Object.values(groupedOrders);
+
+        res.status(201).json({ error: false, data: formattedOrders });
+    } catch (error: any) {
+        res.status(500).json({ error: true, message: error.message });
     }
 }
+
 
 export async function getOrderById(req: Request, res: Response) {
     try {
-        const { id } = req.params
-        const [order] = await db.select().from(ordersTable).where(eq(ordersTable.id, Number(id)))
-        if (!order) {
-            res.status(404).json([]);
+        const { id } = req.params;
+
+        // Query the order by ID with associated products
+        const rawOrderData = await db
+            .select()
+            .from(ordersTable)
+            .where(eq(ordersTable.id, Number(id)))
+            .leftJoin(orderItemsTable, eq(ordersTable.id, orderItemsTable.orderId))
+            .leftJoin(productsTable, eq(orderItemsTable.productId, productsTable.id));
+
+        // Check if the order exists
+        if (!rawOrderData.length) {
+            res.status(404).json({ error: true, message: "Order not found" });
             return;
-        } else {
-            res.status(201).json({ error: false, data: order })
-            return
         }
 
-    } catch (error) {
-        res.status(500).send(error)
-        return
+        // Structure the order data with associated products
+        const formattedOrder = rawOrderData.reduce(
+            (acc: any, row: any) => {
+                // If the order details haven't been added yet, add them
+                if (!acc.id) {
+                    acc = {
+                        ...row.orders,
+                        products: [], // Initialize an empty array for products
+                    };
+                }
+
+                // Add product details to the `products` array
+                if (row.order_products && row.products) {
+                    acc.products.push({
+                        ...row.order_products,
+                        ...row.products, // Add all fields from the products table
+                    });
+                }
+
+                return acc;
+            },
+            {} // Initial accumulator
+        );
+
+        res.status(201).json({ error: false, data: formattedOrder });
+    } catch (error: any) {
+        res.status(500).json({ error: true, message: error.message });
     }
 }
+
 
 
 export async function updateOrderItems(req: Request, res: Response) {
