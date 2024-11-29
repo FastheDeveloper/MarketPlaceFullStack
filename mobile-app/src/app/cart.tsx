@@ -15,8 +15,8 @@ const Cart = () => {
     mutationFn: () =>
       createOrder(
         {
-          notes: "fly fishing pole",
-          deliveryAddress: "Shagamu",
+          notes: "Please Pack all items in a seperate bag",
+          deliveryAddress: "4, Active Lane, La Flame Ave. 200254",
         },
         items.map((item: any) => ({
           productId: item.product.id,

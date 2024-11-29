@@ -9,7 +9,7 @@ export async function createOrder(deliveryDeets: {}, items: any[]) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token
+                'Authorization': token || ''
             },
             body: JSON.stringify({
                 order: deliveryDeets,
@@ -29,4 +29,21 @@ export async function createOrder(deliveryDeets: {}, items: any[]) {
 
     }
 
+}
+
+export async function listOrder() {
+    const token = useAuth.getState().token
+    try {
+        const res = await fetch(`${API_URL}/orders`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token || ''
+            }
+        })
+        const data = await res.json()
+
+        return data
+    } catch (error: any) {
+        throw Error('Failed to fetch orders', error)
+    }
 }
