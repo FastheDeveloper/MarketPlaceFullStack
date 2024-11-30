@@ -157,7 +157,7 @@ export default function OrderList() {
           renderItem={renderItem}
           contentContainerStyle={styles.contentContainer}
           ListHeaderComponent={
-            <View className="flex-1">
+            <View className="flex-1 mb-6">
               <Text className="font-semibold text-center text-2xl pb-6">{`Order #${selectedOrder?.id}`}</Text>
               <HStack className="bg-white p-3 justify-between flex-1">
                 <VStack space="sm" className="flex-1">
@@ -169,14 +169,12 @@ export default function OrderList() {
                   </HStack>
                   <HStack className="">
                     <Text className="text-xl">Note: </Text>
-                    <Text className="font-bold text-xl">
-                      {selectedOrder?.notes}
-                    </Text>
+                    <Text className="text-lg">{selectedOrder?.notes}</Text>
                   </HStack>
                 </VStack>
                 <VStack>
-                  <Text>{dayjs(selectedOrder?.createdAt).fromNow()}</Text>
                   <Text className="ml-auto">{selectedOrder?.status}</Text>
+                  <Text>{dayjs(selectedOrder?.createdAt).fromNow()}</Text>
                 </VStack>
               </HStack>
             </View>
