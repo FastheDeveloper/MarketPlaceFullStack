@@ -9,9 +9,9 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { useState } from "react";
 import { Box } from "@/components/ui/box";
 
-import { handleLogin, handleSignup } from "./actions";
 import { useSearchParams } from "next/navigation";
 import { login, register } from "@/apiHelpers/auth";
+import { handleLogin, handleSignup } from "./actions";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
